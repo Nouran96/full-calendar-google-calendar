@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 
-const CLIENT_ID =
-  "229181458743-7e5rj587bq9qsjr7e7c5ut4kktgunpgt.apps.googleusercontent.com";
-const API_KEY = "AIzaSyAXTTATGaeYvWKHSiuLd7ucqmHeMxUoX3g";
+const CLIENT_ID = "<CLIENT_ID>";
+const API_KEY = "<API_KEY>";
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
