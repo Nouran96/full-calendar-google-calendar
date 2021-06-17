@@ -27,6 +27,31 @@ const GoogleCalendar = () => {
     });
   }, []);
 
+  const openSignInPopup = () => {
+    window.gapi.auth2.authorize(
+      { client_id: CLIENT_ID, scope: SCOPES },
+      (res) => {
+        console.log(res);
+        if (res) {
+          console.log(window.gapi.client, res);
+
+          if (res.access_token)
+            localStorage.setItem("access_token", res.access_token);
+
+          // fetch(
+          //   `https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=${res.access_token}`
+          // )
+          //   .then((res) => res.json())
+          //   .then((data) =>
+          //     localStorage.setItem("calendarId", data.items[0].id)
+          //   );
+
+          window.gapi.client.load("calendar", "v3", listUpcomingEvents);
+        }
+      }
+    );
+  };
+
   /**
    *  On load, called to load the auth2 library and API client library.
    */
@@ -40,28 +65,7 @@ const GoogleCalendar = () => {
    */
   const initClient = () => {
     if (!localStorage.getItem("access_token")) {
-      window.gapi.auth2.authorize(
-        { client_id: CLIENT_ID, scope: SCOPES },
-        (res) => {
-          console.log(res);
-          if (res) {
-            console.log(window.gapi.client, res);
-
-            if (res.access_token)
-              localStorage.setItem("access_token", res.access_token);
-
-            // fetch(
-            //   `https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=${res.access_token}`
-            // )
-            //   .then((res) => res.json())
-            //   .then((data) =>
-            //     localStorage.setItem("calendarId", data.items[0].id)
-            //   );
-
-            window.gapi.client.load("calendar", "v3", listUpcomingEvents);
-          }
-        }
-      );
+      openSignInPopup();
     } else {
       fetch(
         `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}&orderBy=startTime&singleEvents=true`,
@@ -77,28 +81,7 @@ const GoogleCalendar = () => {
           } else {
             localStorage.removeItem("access_token");
 
-            window.gapi.auth2.authorize(
-              { client_id: CLIENT_ID, scope: SCOPES },
-              (res) => {
-                console.log(res);
-                if (res) {
-                  console.log(window.gapi.client, res);
-
-                  if (res.access_token)
-                    localStorage.setItem("access_token", res.access_token);
-
-                  // fetch(
-                  //   `https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=${res.access_token}`
-                  // )
-                  //   .then((res) => res.json())
-                  //   .then((data) =>
-                  //     localStorage.setItem("calendarId", data.items[0].id)
-                  //   );
-
-                  window.gapi.client.load("calendar", "v3", listUpcomingEvents);
-                }
-              }
-            );
+            openSignInPopup();
           }
         })
         .then((data) => {
